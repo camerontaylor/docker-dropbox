@@ -33,6 +33,7 @@ RUN mkdir -p /opt/dropbox \
 	&& mv /dbox/.dropbox-dist/dropbox-lnx* /opt/dropbox/ \
 	&& mv /dbox/.dropbox-dist/dropboxd /opt/dropbox/ \
 	&& mv /dbox/.dropbox-dist/VERSION /opt/dropbox/ \
+	&& chmod 755 `find /opt/dropbox -name 'libdropbox_apex.so'` \
 	&& rm -rf /dbox/.dropbox-dist \
 	&& install -dm0 /dbox/.dropbox-dist \
 	# Prevent dropbox to write update files
