@@ -1,13 +1,14 @@
-FROM debian:jessie
-MAINTAINER Jan Broer <janeczku@yahoo.de>
+FROM debian:buster
+MAINTAINER WanCW <contact@wancw.idv.tw>
 ENV DEBIAN_FRONTEND noninteractive
 
-# Following 'How do I add or remove Dropbox from my Linux repository?' - https://www.dropbox.com/en/help/246
-RUN echo 'deb http://linux.dropbox.com/debian jessie main' > /etc/apt/sources.list.d/dropbox.list \
-	&& apt-key adv --keyserver pgp.mit.edu --recv-keys 1C61A2656FB57B7E4DE0F4C1FC918B335044912E \
-	&& apt-get -qqy update \
-	# Note 'ca-certificates' dependency is required for 'dropbox start -i' to succeed
-	&& apt-get -qqy install ca-certificates curl python-gpgme dropbox \
+# Install Dropbox installer - https://www.dropbox.com/install-linux
+RUN apt-get -qqy update \
+	# python3-gpg is required to verify binary signatures
+	&& apt-get -qqy install curl python3-gpg \
+	# Fetch and install the .deb file
+	&& curl -sL https://www.dropbox.com/download?dl=packages/debian/dropbox_2019.02.14_amd64.deb > /tmp/dropbox.deb \
+	&& apt install -y --fix-broken /tmp/dropbox.deb \
 	# Perform image clean up.
 	&& apt-get -qqy autoclean \
 	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
@@ -32,6 +33,7 @@ RUN mkdir -p /opt/dropbox \
 	&& mv /dbox/.dropbox-dist/dropbox-lnx* /opt/dropbox/ \
 	&& mv /dbox/.dropbox-dist/dropboxd /opt/dropbox/ \
 	&& mv /dbox/.dropbox-dist/VERSION /opt/dropbox/ \
+	&& chmod 755 `find /opt/dropbox -name 'libdropbox_apex.so'` \
 	&& rm -rf /dbox/.dropbox-dist \
 	&& install -dm0 /dbox/.dropbox-dist \
 	# Prevent dropbox to write update files

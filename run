@@ -59,6 +59,7 @@ if [[ -z "$DBOX_SKIP_UPDATE" ]]; then
 	        mv $tmpdir/.dropbox-dist/* /opt/dropbox/
 	        rm -rf $tmpdir
 	        echo "Dropbox updated to v$Latest"
+		chmod 755 $(find /opt/dropbox -name 'libdropbox_apex.so')
 	else
 		echo "Dropbox is up-to-date"
 	fi
