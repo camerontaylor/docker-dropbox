@@ -1,5 +1,5 @@
 FROM debian:buster
-MAINTAINER WanCW <contact@wancw.idv.tw>
+MAINTAINER Cameron Taylor <camerontaylor@gmail.com>
 ENV DEBIAN_FRONTEND noninteractive
 
 # Install Dropbox installer - https://www.dropbox.com/install-linux
