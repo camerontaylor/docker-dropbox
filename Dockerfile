@@ -1,14 +1,13 @@
-FROM debian:buster
+FROM phusion/baseimage:0.11
 MAINTAINER Cameron Taylor <camerontaylor@gmail.com>
 ENV DEBIAN_FRONTEND noninteractive
 
-# Install Dropbox installer - https://www.dropbox.com/install-linux
-RUN apt-get -qqy update \
-	# python3-gpg is required to verify binary signatures
-	&& apt-get -qqy install curl python3-gpg \
-	# Fetch and install the .deb file
-	&& curl -sL https://www.dropbox.com/download?dl=packages/debian/dropbox_2019.02.14_amd64.deb > /tmp/dropbox.deb \
-	&& apt install -y --fix-broken /tmp/dropbox.deb \
+# Following 'How do I add or remove Dropbox from my Linux repository?' - https://www.dropbox.com/en/help/246
+RUN echo 'deb http://linux.dropbox.com/ubuntu xenial main' > /etc/apt/sources.list.d/dropbox.list \
+	&& apt-key adv --keyserver pool.sks-keyservers.net --recv-keys 1C61A2656FB57B7E4DE0F4C1FC918B335044912E \
+	&& apt-get -qqy update \
+	# Note 'ca-certificates' dependency is required for 'dropbox start -i' to succeed
+	&& apt-get -qqy install ca-certificates curl python-gpgme dropbox libatomic1 \
 	# Perform image clean up.
 	&& apt-get -qqy autoclean \
 	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
